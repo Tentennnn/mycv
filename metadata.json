@@ -1,0 +1,5 @@
+{
+  "name": "Gemini CV Builder",
+  "description": "A modern, simple CV builder application that allows users to create, preview, and download professional CVs in A4 format. It supports multiple templates, color customization, and is bilingual in English and Khmer.",
+  "requestFramePermissions": []
+}
