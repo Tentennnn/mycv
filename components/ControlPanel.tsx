@@ -11,108 +11,86 @@ const ControlPanel: React.FC = () => {
   const [isDownloading, setIsDownloading] = useState(false);
   const [isSavingImage, setIsSavingImage] = useState(false);
 
-  const handleDownloadPdf = async () => {
-    const cvContainer = document.getElementById('cv-preview-container');
+  const generateOutput = async (type: 'pdf' | 'image') => {
     const cvElement = document.getElementById('cv-preview-content');
 
-    if (!cvContainer || !cvElement) {
-      console.error("CV preview element not found for PDF generation.");
+    if (!cvElement) {
+      console.error("CV preview element not found for generation.");
       return;
     }
 
-    setIsDownloading(true);
+    if (type === 'pdf') setIsDownloading(true);
+    else setIsSavingImage(true);
 
-    const originalTransform = cvContainer.style.transform;
-    const originalBoxShadow = cvContainer.style.boxShadow;
-    const originalTransition = cvContainer.style.transition;
+    // A4 dimensions in pixels at 96 DPI.
+    const A4_WIDTH_PX = 794;
+    const A4_HEIGHT_PX = 1123;
 
-    cvContainer.style.transform = 'scale(1)';
-    cvContainer.style.boxShadow = 'none';
-    cvContainer.style.transition = 'none';
+    // 1. Clone the node to ensure we capture the current state without altering the live preview.
+    const clone = cvElement.cloneNode(true) as HTMLElement;
+
+    // 2. Create a temporary container for rendering the clone.
+    const printContainer = document.createElement('div');
+    document.body.appendChild(printContainer);
+
+    // 3. Style the container to match A4 dimensions and move it off-screen.
+    // This creates an isolated, stable rendering environment, unaffected by viewport size or scaling.
+    printContainer.style.position = 'absolute';
+    printContainer.style.left = '-9999px';
+    printContainer.style.top = '0px';
+    printContainer.style.width = `${A4_WIDTH_PX}px`;
+    printContainer.style.height = `${A4_HEIGHT_PX}px`;
+    printContainer.style.overflow = 'hidden';
+
+    printContainer.appendChild(clone);
     
-    await new Promise(resolve => setTimeout(resolve, 50));
+    // Wait for the browser to render the clone, ensuring all styles, fonts, and images are loaded.
+    await new Promise(resolve => setTimeout(resolve, 300));
 
     try {
-      const canvas = await html2canvas(cvElement, {
+      const canvas = await html2canvas(clone, {
         scale: 4,
         useCORS: true,
         logging: false,
+        width: A4_WIDTH_PX,
+        height: A4_HEIGHT_PX,
+        windowWidth: A4_WIDTH_PX,
+        windowHeight: A4_HEIGHT_PX,
+        backgroundColor: type === 'image' ? '#ffffff' : null,
       });
 
-      const imgData = canvas.toDataURL('image/png', 1.0);
-      const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4',
-      });
+      const dataUrl = canvas.toDataURL('image/png', 1.0);
 
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = pdf.internal.pageSize.getHeight();
-
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
-      pdf.save("cv.pdf");
-
-    } catch (error) {
-      console.error("Error generating PDF:", error);
-    } finally {
-      cvContainer.style.transform = originalTransform;
-      cvContainer.style.boxShadow = originalBoxShadow;
-      cvContainer.style.transition = originalTransition;
-      
-      setIsDownloading(false);
-    }
-  };
-  
-  const handleSaveImage = async () => {
-    const cvContainer = document.getElementById('cv-preview-container');
-    const cvElement = document.getElementById('cv-preview-content');
-
-    if (!cvContainer || !cvElement) {
-        console.error("CV content element not found for image generation.");
-        return;
-    }
-
-    setIsSavingImage(true);
-
-    const originalTransform = cvContainer.style.transform;
-    const originalBoxShadow = cvContainer.style.boxShadow;
-    const originalTransition = cvContainer.style.transition;
-    
-    // Prepare for high-res capture by temporarily rendering at full scale
-    cvContainer.style.transform = 'scale(1)';
-    cvContainer.style.boxShadow = 'none';
-    cvContainer.style.transition = 'none';
-
-    await new Promise(resolve => setTimeout(resolve, 50)); // Wait for styles to apply
-
-    try {
-        // Capture the CV element at a high resolution, maintaining A4 aspect ratio
-        const canvas = await html2canvas(cvElement, {
-            scale: 4, // Renders at 4x resolution for high quality
-            useCORS: true,
-            logging: false,
-            backgroundColor: '#ffffff' // Ensure a white background for the PNG
+      if (type === 'pdf') {
+        const pdf = new jsPDF({
+          orientation: 'portrait',
+          unit: 'mm',
+          format: 'a4',
         });
-
-        // Convert canvas to data URL and trigger download
-        const dataUrl = canvas.toDataURL('image/png', 1.0);
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = pdf.internal.pageSize.getHeight();
+        pdf.addImage(dataUrl, 'PNG', 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
+        pdf.save("cv.pdf");
+      } else {
         const link = document.createElement('a');
         link.href = dataUrl;
         link.download = 'cv.png';
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-
+      }
     } catch (error) {
-        console.error("Error generating image:", error);
+      console.error(`Error generating ${type}:`, error);
     } finally {
-        // Reset the container styles
-        cvContainer.style.transform = originalTransform;
-        cvContainer.style.boxShadow = originalBoxShadow;
-        cvContainer.style.transition = originalTransition;
-        setIsSavingImage(false);
+      // 4. Clean up the DOM by removing the temporary container.
+      document.body.removeChild(printContainer);
+      if (type === 'pdf') setIsDownloading(false);
+      else setIsSavingImage(false);
     }
   };
+
+  const handleDownloadPdf = () => generateOutput('pdf');
+  const handleSaveImage = () => generateOutput('image');
 
   return (
     <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
