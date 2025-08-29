@@ -23,7 +23,14 @@ const CvPreview: React.FC = () => {
             const paddingY = parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
 
             const availableWidth = wrapper.clientWidth - paddingX;
-            const availableHeight = wrapper.clientHeight - paddingY;
+            
+            // The preview is sticky with a top offset of 88px. This means the available
+            // vertical space should be calculated relative to the viewport height,
+            // minus this offset. This provides a stable height reference, fixing
+            // the scaling issue on mobile where the container height is not constrained.
+            const stickyOffset = 88; // from `top-[88px]` class
+            const availableHeight = window.innerHeight - stickyOffset - paddingY;
+
 
             // Calculate scale to fit both width and height
             const scaleX = availableWidth / A4_WIDTH_PX;
@@ -44,7 +51,7 @@ const CvPreview: React.FC = () => {
         return () => {
             window.removeEventListener('resize', calculateScale);
         };
-    }, []); // Empty dependency array ensures this effect runs only once on mount.
+    }, []); // Empty dependency array is correct, as we don't want this to re-run on scale change.
 
     const renderTemplate = () => {
         const props = { data: cvData, accentColor, language };
@@ -61,7 +68,7 @@ const CvPreview: React.FC = () => {
     return (
         <div 
             ref={previewWrapperRef}
-            className="bg-gray-200 dark:bg-gray-800 p-4 sm:p-8 rounded-lg h-full flex items-center justify-center sticky top-[88px]"
+            className="bg-gray-200 dark:bg-gray-800 p-4 sm:p-8 rounded-lg flex items-center justify-center sticky top-[88px] h-[calc(100vh-88px)] lg:h-full"
         >
             <div 
                 className="w-a4 h-a4 bg-white shadow-2xl origin-top transition-transform duration-300"

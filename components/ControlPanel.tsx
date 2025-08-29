@@ -12,50 +12,46 @@ const ControlPanel: React.FC = () => {
   const [isSavingImage, setIsSavingImage] = useState(false);
 
   const generateOutput = async (type: 'pdf' | 'image') => {
-    const cvElement = document.getElementById('cv-preview-content');
+    // Target the element that has the A4 dimensions and styling, not just its content.
+    const cvElement = document.getElementById('cv-preview-container');
 
     if (!cvElement) {
-      console.error("CV preview element not found for generation.");
+      console.error("CV preview container element not found for generation.");
       return;
     }
 
     if (type === 'pdf') setIsDownloading(true);
     else setIsSavingImage(true);
 
-    // A4 dimensions in pixels at 96 DPI.
-    const A4_WIDTH_PX = 794;
-    const A4_HEIGHT_PX = 1123;
-
-    // 1. Clone the node to ensure we capture the current state without altering the live preview.
+    // 1. Clone the node to capture its current state without altering the live preview.
     const clone = cvElement.cloneNode(true) as HTMLElement;
 
-    // 2. Create a temporary container for rendering the clone.
+    // 2. Remove styles from the clone that could interfere with off-screen rendering,
+    // like CSS transforms used for scaling the preview.
+    clone.style.transform = 'none';
+    clone.style.transition = 'none';
+    
+    // 3. Create a temporary container to render the clone off-screen.
+    // We don't need to set dimensions here; the clone itself has the `w-a4 h-a4` classes.
     const printContainer = document.createElement('div');
     document.body.appendChild(printContainer);
-
-    // 3. Style the container to match A4 dimensions and move it off-screen.
-    // This creates an isolated, stable rendering environment, unaffected by viewport size or scaling.
+    
     printContainer.style.position = 'absolute';
     printContainer.style.left = '-9999px';
     printContainer.style.top = '0px';
-    printContainer.style.width = `${A4_WIDTH_PX}px`;
-    printContainer.style.height = `${A4_HEIGHT_PX}px`;
-    printContainer.style.overflow = 'hidden';
+    printContainer.style.overflow = 'hidden'; // Hide scrollbars if any
 
     printContainer.appendChild(clone);
     
-    // Wait for the browser to render the clone, ensuring all styles, fonts, and images are loaded.
+    // Allow a moment for the browser to render the clone and load fonts/images.
     await new Promise(resolve => setTimeout(resolve, 300));
 
     try {
       const canvas = await html2canvas(clone, {
-        scale: 4,
+        scale: 4, // Use a higher scale for better quality output.
         useCORS: true,
         logging: false,
-        width: A4_WIDTH_PX,
-        height: A4_HEIGHT_PX,
-        windowWidth: A4_WIDTH_PX,
-        windowHeight: A4_HEIGHT_PX,
+        // Let html2canvas determine the width/height from the element's rendered size.
         backgroundColor: type === 'image' ? '#ffffff' : null,
       });
 
