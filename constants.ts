@@ -54,7 +54,7 @@ export const INITIAL_CV_DATA_KM: CvData = {
     { id: "edu-1", degree: "បរិញ្ញាបត្រវិទ្យាសាស្ត្រកុំព្យូទ័រ", school: "សាកលវិទ្យាល័យភូមិន្ទភ្នំពេញ", startDate: "2015", endDate: "2019", description: "បានផ្តោតលើការអភិវឌ្ឍន៍កម្មវិធី និងបញ្ញាសិប្បនិម្មិត។" },
   ],
   experience: [
-    { id: "exp-1", title: "អ្នកអភិវឌ្ឍន៍គេហទំព័រជាន់ខ្ពស់", company: "ក្រុមហ៊ុនតិចណូឡូជី XYZ", startDate: "2021", endDate: "បច្ចុប្បន្ន", description: "ដឹកនាំការអភិវឌ្ឍន៍ផ្នែកខាងមុខសម្រាប់គម្រោងធំៗ ដោយប្រើប្រាស់ React និង TypeScript។ បង្កើនประสิทธิภาพកម្មវិធីបាន 20% ។" },
+    { id: "exp-1", title: "អ្នកអភិវឌ្ឍន៍គេហទំព័រជាន់ខ្ពស់", company: "ក្រុមហ៊ុនតិចណូឡូជី XYZ", startDate: "2021", endDate: "បច្ចុប្បន្ន", description: "ដឹកនាំការអភិវឌ្ឍន៍ផ្នែកខាងមុខសម្រាប់គម្រោងធំៗ ដោយប្រើប្រាស់ React និង TypeScript។ បង្កើនកម្មវិធីបាន 20% ។" },
     { id: "exp-2", title: "អ្នកអភិវឌ្ឍន៍គេហទំព័រ", company: "ក្រុមហ៊ុនឌីជីថល ABC", startDate: "2019", endDate: "2021", description: "បានបង្កើតនិងថែទាំគេហទំព័រពាណិជ្ជកម្មអេឡិចត្រូនិច ដោយសហការជាមួយក្រុមអ្នករចនា UI/UX ។" }
   ],
   skills: [
@@ -62,7 +62,6 @@ export const INITIAL_CV_DATA_KM: CvData = {
     { id: "skill-2", name: "TypeScript", level: 5 },
     { id: "skill-3", name: "Node.js", level: 4 },
     { id: "skill-4", name: "Tailwind CSS", level: 5 },
-    { id: "skill-5", name: "ភាសាខ្មែរ", level: 5 },
   ],
   certifications: [
       {id: "cert-1", name: 'Certified JavaScript Developer', issuer: 'CIW', date: '2020'}
