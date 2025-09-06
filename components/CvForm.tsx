@@ -1,28 +1,47 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useCvStore, useTranslations } from '../hooks/useCvStore';
 import Accordion, { AccordionItem } from './ui/Accordion';
 import Input from './ui/Input';
 import Textarea from './ui/Textarea';
 import Button from './ui/Button';
+import ImageCropper from './ui/ImageCropper';
 
 const CvForm: React.FC = () => {
   const store = useCvStore();
   const t = useTranslations();
   const langClass = store.language === 'km' ? 'font-khmer' : 'font-sans';
+  const [imageToCrop, setImageToCrop] = useState<string | null>(null);
   
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const reader = new FileReader();
       reader.onload = (event) => {
-        store.updatePersonalInfo('photo', event.target?.result as string);
+        setImageToCrop(event.target?.result as string);
       };
       reader.readAsDataURL(e.target.files[0]);
+      e.target.value = ''; // Reset input to allow re-uploading the same file
     }
+  };
+
+  const handleCropComplete = (croppedImageUrl: string) => {
+    store.updatePersonalInfo('photo', croppedImageUrl);
+    setImageToCrop(null); // Close modal
+  };
+
+  const handleCropCancel = () => {
+    setImageToCrop(null); // Close modal
   };
   
   return (
     <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+      {imageToCrop && (
+        <ImageCropper 
+          imageSrc={imageToCrop}
+          onCropComplete={handleCropComplete}
+          onCancel={handleCropCancel}
+        />
+      )}
       <h2 className={`text-xl font-bold mb-4 ${langClass}`}>{t('form_title')}</h2>
       <Accordion>
         {/* Personal Info */}

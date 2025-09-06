@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useCvStore, useTranslations } from '../hooks/useCvStore';
-import { TEMPLATES, COLORS } from '../constants';
+import { TEMPLATES, COLORS, A4_WIDTH_PX, A4_HEIGHT_PX } from '../constants';
 // @ts-ignore
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -12,7 +12,6 @@ const ControlPanel: React.FC = () => {
   const [isSavingImage, setIsSavingImage] = useState(false);
 
   const generateOutput = async (type: 'pdf' | 'image') => {
-    // Target the element that has the A4 dimensions and styling, not just its content.
     const cvElement = document.getElementById('cv-preview-container');
 
     if (!cvElement) {
@@ -23,23 +22,25 @@ const ControlPanel: React.FC = () => {
     if (type === 'pdf') setIsDownloading(true);
     else setIsSavingImage(true);
 
-    // 1. Clone the node to capture its current state without altering the live preview.
     const clone = cvElement.cloneNode(true) as HTMLElement;
 
-    // 2. Remove styles from the clone that could interfere with off-screen rendering,
-    // like CSS transforms used for scaling the preview.
+    // Apply styles for off-screen rendering
     clone.style.transform = 'none';
     clone.style.transition = 'none';
+    // Use precise pixel dimensions for rendering to avoid inconsistencies from 'mm' units
+    clone.style.width = `${A4_WIDTH_PX}px`;
+    clone.style.height = `${A4_HEIGHT_PX}px`;
     
-    // 3. Create a temporary container to render the clone off-screen.
-    // We don't need to set dimensions here; the clone itself has the `w-a4 h-a4` classes.
+    // Create a temporary container to render the clone off-screen at full size
     const printContainer = document.createElement('div');
     document.body.appendChild(printContainer);
     
     printContainer.style.position = 'absolute';
     printContainer.style.left = '-9999px';
     printContainer.style.top = '0px';
-    printContainer.style.overflow = 'hidden'; // Hide scrollbars if any
+    printContainer.style.width = `${A4_WIDTH_PX}px`;
+    printContainer.style.height = `${A4_HEIGHT_PX}px`;
+    printContainer.style.overflow = 'hidden';
 
     printContainer.appendChild(clone);
     
@@ -48,10 +49,14 @@ const ControlPanel: React.FC = () => {
 
     try {
       const canvas = await html2canvas(clone, {
-        scale: 4, // Use a higher scale for better quality output.
+        scale: 4,
         useCORS: true,
         logging: false,
-        // Let html2canvas determine the width/height from the element's rendered size.
+        // Explicitly set dimensions for html2canvas to ensure A4 size
+        width: A4_WIDTH_PX,
+        height: A4_HEIGHT_PX,
+        windowWidth: A4_WIDTH_PX,
+        windowHeight: A4_HEIGHT_PX,
         backgroundColor: type === 'image' ? '#ffffff' : null,
       });
 
@@ -78,7 +83,6 @@ const ControlPanel: React.FC = () => {
     } catch (error) {
       console.error(`Error generating ${type}:`, error);
     } finally {
-      // 4. Clean up the DOM by removing the temporary container.
       document.body.removeChild(printContainer);
       if (type === 'pdf') setIsDownloading(false);
       else setIsSavingImage(false);
