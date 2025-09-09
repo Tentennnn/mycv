@@ -22,14 +22,14 @@ export const INITIAL_CV_DATA_EN: CvData = {
     { id: "exp-2", title: "Web Developer", company: "ABC Digital", startDate: "2019", endDate: "2021", description: "Developed and maintained e-commerce websites in collaboration with the UI/UX design team." }
   ],
   skills: [
-    { id: "skill-1", name: "React", level: 5 },
-    { id: "skill-2", name: "TypeScript", level: 5 },
-    { id: "skill-3", name: "Node.js", level: 4 },
-    { id: "skill-4", name: "Tailwind CSS", level: 5 },
-    { id: "skill-5", name: "Khmer", level: 5 },
+    { id: "skill-1", name: "PhotoShop", level: 5 },
+    { id: "skill-2", name: "Illustrator", level: 5 },
+    { id: "skill-3", name: "AfterEffects", level: 4 },
+    { id: "skill-4", name: "Premier Pro", level: 5 },
+    { id: "skill-5", name: "Blender", level: 5 },
   ],
   certifications: [
-      {id: "cert-1", name: 'Certified JavaScript Developer', issuer: 'CIW', date: '2020'}
+      {id: "cert-1", name: 'Step Academy Cambodia', issuer: 'CIW', date: '2020'}
   ],
   languages: [
       {id: "lang-1", name: 'Khmer', level: 'Native'},
@@ -46,18 +46,18 @@ export const INITIAL_CV_DATA_EN: CvData = {
 export const INITIAL_CV_DATA_KM: CvData = {
   personalInfo: {
     name: "Sok Chhaya",
-    jobTitle: "អ្នកអភិវឌ្ឍន៍គេហទំព័រ",
+    jobTitle: "Graphic Designer",
     phone: "012 345 678",
     email: "sok.chhaya@email.com",
     address: "ផ្ទះលេខ ១២៣, ផ្លូវ ៤៥៦, ភ្នំពេញ",
     photo: null,
-    about: "ខ្ញុំជាអ្នកអភិវឌ្ឍន៍គេហទំព័រដែលមានបទពិសោធន៍ ៥ ឆ្នាំក្នុងការបង្កើតកម្មវិធីគេហទំព័រដែលមានលក្ខណៈទំនើបនិងឆ្លើយតប។ ខ្ញុំមានជំនាញក្នុង React, TypeScript, និង Node.js ។"
+    about: "✨ អ្នករចនាក្រាហ្វិក (Graphic Designer) 🎨 ច្នៃប្រឌិត | Logo | Branding | Poster | UI/UX 🖌️ ជំនាញក្នុង Photoshop, Illustrator, After Effects, Blender 🚀 បង្កើតការរចនាដែលទាក់ទាញ និងមានអត្ថន័យ"
   },
   education: [
     { id: "edu-1", degree: "បរិញ្ញាបត្រវិទ្យាសាស្ត្រកុំព្យូទ័រ", school: "សាកលវិទ្យាល័យភូមិន្ទភ្នំពេញ", startDate: "2015", endDate: "2019", description: "បានផ្តោតលើការអភិវឌ្ឍន៍កម្មវិធី និងបញ្ញាសិប្បនិម្មិត។" },
   ],
   experience: [
-    { id: "exp-1", title: "អ្នកអភិវឌ្ឍន៍គេហទំព័រជាន់ខ្ពស់", company: "ក្រុមហ៊ុនតិចណូឡូជី XYZ", startDate: "2021", endDate: "បច្ចុប្បន្ន", description: "ដឹកនាំការអភិវឌ្ឍន៍ផ្នែកខាងមុខសម្រាប់គម្រោងធំៗ ដោយប្រើប្រាស់ React និង TypeScript។ បង្កើនประสิทธิภาพកម្មវិធីបាន 20% ។" },
+    { id: "exp-1", title: "អ្នកអភិវឌ្ឍន៍គេហទំព័រជាន់ខ្ពស់", company: "ក្រុមហ៊ុនតិចណូឡូជី XYZ", startDate: "2021", endDate: "បច្ចុប្បន្ន", description: "ដឹកនាំការអភិវឌ្ឍន៍ផ្នែកខាងមុខសម្រាប់គម្រោងធំៗ ដោយប្រើប្រាស់ React និង TypeScript។ បង្កើនកម្មវិធីបាន 20% ។" },
     { id: "exp-2", title: "អ្នកអភិវឌ្ឍន៍គេហទំព័រ", company: "ក្រុមហ៊ុនឌីជីថល ABC", startDate: "2019", endDate: "2021", description: "បានបង្កើតនិងថែទាំគេហទំព័រពាណិជ្ជកម្មអេឡិចត្រូនិច ដោយសហការជាមួយក្រុមអ្នករចនា UI/UX ។" }
   ],
   skills: [
